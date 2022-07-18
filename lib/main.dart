@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_bloc_auth/HOme.dart';
+import 'package:flutter_bloc_auth/blocs/auth/auth_bloc.dart';
+import 'package:flutter_bloc_auth/mainpage.dart';
 import 'package:flutter_bloc_auth/services/loginservice.dart';
 
 void main() {
@@ -13,7 +15,9 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return BlocProvider(
+      create: (context) => AuthBloc(LoginUserService())..add(AppStarted()),
+      child: MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(
           // This is the theme of your application.
@@ -27,9 +31,30 @@ class MyApp extends StatelessWidget {
           // is not restarted.
           primarySwatch: Colors.blue,
         ),
-        home: RepositoryProvider(
-          create: (context) => LoginUserService(),
-          child: const HomePage(),
-        ));
+        //TODO: import the auth bloc here and use the blocBuilder here for more information
+        home: BlocBuilder<AuthBloc, AuthState>(
+          builder: (context, state) {
+            if (state is UserAuthenticatedState) {
+              return const MainScreen();
+            }
+            if (state is UserLoadingAuthenticatedState) {
+              return const Scaffold(
+                body: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            }
+            if (state is UserUnAuthenticatedState) {
+              return const HomePage();
+            }
+            return const Scaffold(
+              body: Center(
+                child: Text("UNKNOWN ERROOOOR"),
+              ),
+            );
+          },
+        ),
+      ),
+    );
   }
 }

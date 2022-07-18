@@ -14,36 +14,39 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final _emialController = TextEditingController();
     final _passwordController = TextEditingController();
-    return Scaffold(
-      body: BlocProvider<LoginBloc>(
-        create: (context) =>
-            LoginBloc(RepositoryProvider.of<LoginUserService>(context)),
-        child: Center(
-          child: BlocBuilder<LoginBloc, LoginState>(
-            builder: (context, state) {
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  TextField(
-                    controller: _emialController,
-                  ),
-                  TextField(
-                    controller: _passwordController,
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      context.read<LoginBloc>().add(
-                            LoginButtonPressed(
-                              email: _emialController.text,
-                              password: _passwordController.text,
-                            ),
-                          );
-                    },
-                    child: const Text("Post Request"),
-                  ),
-                ],
-              );
-            },
+    return RepositoryProvider(
+      create: (context) => LoginUserService(),
+      child: Scaffold(
+        body: BlocProvider<LoginBloc>(
+          create: (context) =>
+              LoginBloc(RepositoryProvider.of<LoginUserService>(context)),
+          child: Center(
+            child: BlocBuilder<LoginBloc, LoginState>(
+              builder: (context, state) {
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    TextField(
+                      controller: _emialController,
+                    ),
+                    TextField(
+                      controller: _passwordController,
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        context.read<LoginBloc>().add(
+                              LoginButtonPressed(
+                                email: _emialController.text,
+                                password: _passwordController.text,
+                              ),
+                            );
+                      },
+                      child: const Text("Post Request"),
+                    ),
+                  ],
+                );
+              },
+            ),
           ),
         ),
       ),
