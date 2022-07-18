@@ -23,7 +23,7 @@ class LoginUserService {
     storage.deleteAll();
   }
 
-  Future loginUser(String username, String password) async {
+  Future<String> loginUser(String username, String password) async {
     Response response = await Dio().post(
       "https://reqres.in/api/register",
       data: {
@@ -35,5 +35,6 @@ class LoginUserService {
     // print("----------------");
     // ignore: avoid_print
     print(response.data['token']);
+    return response.data["token"];
   }
 }
